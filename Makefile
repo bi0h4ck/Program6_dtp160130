@@ -7,7 +7,7 @@ CXXFLAGS = -Wall -g
 CPPFLAGS = -I/home/011/d/dt/dtp160130/Program6_dtp160130/include
 LDFLAGS = -L/home/011/d/dt/dtp160130/Program6_dtp160130/lib
 LDLIBS = -lcdk -lcurses 
-
+PROJECTNAME = CS3377.Program6
 
 #
 # PROJECTNAME is a descriptive name used for the backup target
@@ -26,4 +26,17 @@ clean:
 
 $(EXECFILE): $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
+
+backup:
+	@make clean
+	@mkdir -p ~/backups; chmod 700 ~/backups
+	@$(eval CURDIRNAME := $(shell basename "`pwd`"))
+	@$(eval MKBKUPNAME := ~/backups/$(PROJECTNAME)-$(shell date +'%Y.%m.%d-%H:%M:%S').tar.gz)
+	@echo
+	@echo Writing Backup file to: $(MKBKUPNAME)
+	@echo
+	@-tar zcfv $(MKBKUPNAME) ../$(CURDIRNAME) 2> /dev/null
+	@chmod 600 $(MKBKUPNAME)
+	@echo
+	@echo Done!
 
