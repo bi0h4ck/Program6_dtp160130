@@ -1,9 +1,7 @@
 /*
  * Usage of CDK Matrix
- *
- * File:   example1.cc
- * Author: Stephen Perkins
- * Email:  stephen.perkins@utdallas.edu
+ * Program6 by Diem Pham - dtp160130
+ * CS3366.002
  */
 
 #include <iostream>
