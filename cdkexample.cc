@@ -14,7 +14,7 @@
 
 #define MATRIX_WIDTH 3
 #define MATRIX_HEIGHT 5
-#define BOX_WIDTH 15
+#define BOX_WIDTH 20
 #define MATRIX_NAME_STRING "Binary file content"
 
 using namespace std;
@@ -32,30 +32,18 @@ class BinaryFileRecord{
   char stringBuffer[maxRecordStringLength];
 };
 
-
-
-
-int main()
-{
+int main() {
 
   WINDOW	*window;
   CDKSCREEN	*cdkscreen;
   CDKMATRIX     *myMatrix;           // CDK Screen Matrix
   ostringstream oss;
+  ostringstream os;
 
   BinaryFileHeader *myHeader = new BinaryFileHeader();
-  //BinaryFileRecord *myRecord = new BinaryFileRecord();
+  BinaryFileRecord *myRecord = new BinaryFileRecord();
 
   ifstream binInfile ("cs3377.bin", ios::in | ios::binary);
-  
- 
-  // Remember that matrix starts out at 1,1.
-  // Since arrays start out at 0, the first entries
-  // below ("R0", and "C0") are just placeholders
-  // 
-  // Finally... make sure your arrays have enough entries given the
-  // values you choose to set for MATRIX_WIDTH and MATRIX_HEIGHT
-  // above.
 
   const char 		*rowTitles[] = {"R0", "a", "b", "c", "d", "e"};
   const char 		*columnTitles[] = {"C0", "a", "b", "c", "d", "e"};
@@ -90,10 +78,11 @@ int main()
   drawCDKMatrix(myMatrix, true);
 
   /*
-   * Dipslay a message
+   * Dipslay header
+   * 
    */
   binInfile.read((char *) myHeader, sizeof(BinaryFileHeader));
-  oss << "Magic: "  << setfill('0') << setw(8) << std::hex <<  myHeader -> magicNumber; 
+  oss << "Magic: "  << "0x" << std::uppercase << setfill('0') << std::setw(8) << std::hex <<  myHeader -> magicNumber; 
   setCDKMatrixCell(myMatrix, 1, 1, strdup(oss.str().c_str()));
   oss.str("");
   
@@ -105,9 +94,18 @@ int main()
   setCDKMatrixCell(myMatrix, 1, 3, strdup(oss.str().c_str()));
   oss.str("");
 
-  binInfile.close(); 
-
-
+  binInfile.clear();
+  int i = 2;
+ while(!binInfile.eof()) { /* Loop through records to print out on the matrix*/
+    binInfile.read((char *) myRecord, sizeof(BinaryFileRecord));
+    os << "strlen: " << strlen(myRecord -> stringBuffer);
+    setCDKMatrixCell(myMatrix, i, 1, strdup(os.str().c_str()));
+    os.str("");
+    
+    setCDKMatrixCell(myMatrix, i, 2, myRecord -> stringBuffer);
+    
+    i = i + 1;
+  }
 
   drawCDKMatrix(myMatrix, true);    /* required  */
 
